@@ -39,7 +39,7 @@ jobs:
     - name: Patch to Gauche source
       run: |
         cp load_system_cert.c Gauche/ext/tls
-    - Build
+    - name: Build
       run: |
         gcc -v
         cd Gauche-$GAUCHE_VERSION
@@ -87,7 +87,7 @@ jobs:
     - name: Patch to Gauche source
       run: |
         cp load_system_cert.c Gauche/ext/tls
-    - Build
+    - name: Build
       run: |
         gcc -v
         cd Gauche-$GAUCHE_VERSION
