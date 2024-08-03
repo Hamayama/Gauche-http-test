@@ -1,4 +1,4 @@
-name: Test
+name: Build and test
 
 on:
   push:
@@ -16,7 +16,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: shirok/setup-gauche@v6
-      with
+      with:
         prebuilt-binary: false
         gauche-version: $GAUCHE_VERSION
         test-gauche: false
@@ -64,7 +64,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: shirok/setup-gauche@v6
-      with
+      with:
         prebuilt-binary: false
         gauche-version: $GAUCHE_VERSION
         test-gauche: false
