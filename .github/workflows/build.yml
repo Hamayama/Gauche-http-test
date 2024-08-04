@@ -104,7 +104,6 @@ jobs:
     - name: Patch to Gauche source
       run: |
         cp load_system_cert.c Gauche-$GAUCHE_VERSION/ext/tls
-        cp tls-mbed.c         Gauche-$GAUCHE_VERSION/ext/tls
     - name: Build and install
       run: |
         gcc -v
