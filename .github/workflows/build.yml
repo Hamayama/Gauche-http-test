@@ -64,7 +64,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-latest, macos-13]
+        os: [macos-latest, macos-13, macos-12]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 90
     env:
@@ -85,7 +85,9 @@ jobs:
         gauche-config --prefix
     - name: Install tools
       run: |
-        brew install automake libtool openssl
+        brew install automake libtool
+        brew install openssl
+        brew uninstall mbedtls
     - name: Check openssl
       run: |
         whereis openssl
