@@ -2,8 +2,8 @@
 
 
 ### 概要
-- Gauche の HTTP テスト (デバッグ用) です。
-  結果は、GitHub Actions で確認します。
+- Gauche の HTTP テスト (デバッグ用) です。  
+  結果は、GitHub Actions で確認します。  
   汎用性はありません。
 
 
