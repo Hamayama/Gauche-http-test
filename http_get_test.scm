@@ -20,7 +20,7 @@
 (http-get-test)
 (print)
 
-(tls-ca-bundle-path #"~(process-output->string \"which openssl\")/cert.pem")
+(tls-ca-bundle-path "/etc/ssl/cert.pem")
 (http-get-test)
 (print)
 
