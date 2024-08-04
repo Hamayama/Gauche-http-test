@@ -50,7 +50,8 @@ jobs:
         gcc -v
         cd Gauche-$GAUCHE_VERSION
         export GAUCHE_PREFIX=`gauche-config --prefix`
-        ./configure -prefix=$GAUCHE_PREFIX --with-tls=mbedtls-internal
+        echo $GAUCHE_PREFIX
+        ./configure --prefix=$GAUCHE_PREFIX --with-tls=mbedtls-internal
         make
         make -s check
         sudo make install
@@ -111,10 +112,11 @@ jobs:
         gcc -v
         cd Gauche-$GAUCHE_VERSION
         export GAUCHE_PREFIX=`gauche-config --prefix`
-        ./configure -prefix=$GAUCHE_PREFIX --with-tls=mbedtls-internal
+        echo $GAUCHE_PREFIX
+        ./configure --prefix=$GAUCHE_PREFIX --with-tls=mbedtls-internal
         make
         make -s check
-        make install
+        sudo make install
     - name: Test
       if: always()
       run: |
