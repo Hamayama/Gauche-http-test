@@ -33,6 +33,7 @@ jobs:
       run: |
         whereis openssl
         openssl version
+        ls `whereis openssl`
     - name: Download Gauche source
       run: |
         pwd
@@ -89,6 +90,7 @@ jobs:
       run: |
         whereis openssl
         openssl version
+        ls `whereis openssl`
     - name: Download Gauche source
       run: |
         pwd
