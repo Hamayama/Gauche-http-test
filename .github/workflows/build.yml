@@ -33,8 +33,9 @@ jobs:
       run: |
         whereis openssl
         openssl version
-        ls /etc/ssl/certs || :
-        ls /usr/local/etc/openssl || :
+        ls /etc/ssl/certs
+        ls /usr/local/etc/openssl
+        :
     - name: Download Gauche source
       run: |
         pwd
@@ -46,6 +47,7 @@ jobs:
     - name: Patch to Gauche source
       run: |
         cp load_system_cert.c Gauche-$GAUCHE_VERSION/ext/tls
+        cp tls-mbed.c         Gauche-$GAUCHE_VERSION/ext/tls
     - name: Build and install
       run: |
         gcc -v
@@ -91,8 +93,9 @@ jobs:
       run: |
         whereis openssl
         openssl version
-        ls /etc/ssl/certs || :
-        ls /usr/local/etc/openssl || :
+        ls /etc/ssl/certs
+        ls /usr/local/etc/openssl
+        :
     - name: Download Gauche source
       run: |
         pwd
@@ -104,6 +107,7 @@ jobs:
     - name: Patch to Gauche source
       run: |
         cp load_system_cert.c Gauche-$GAUCHE_VERSION/ext/tls
+        cp tls-mbed.c         Gauche-$GAUCHE_VERSION/ext/tls
     - name: Build and install
       run: |
         gcc -v
