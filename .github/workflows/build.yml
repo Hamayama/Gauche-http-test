@@ -15,6 +15,14 @@ jobs:
       GAUCHE_VERSION_UNDERSCORE: 0_9_14
     steps:
     - uses: actions/checkout@v4
+    - name: Install tools
+      run: |
+        sudo apt-get install libgdbm-dev libmbedtls-dev
+    - name: Check openssl
+      run: |
+        whereis openssl
+        openssl version
+        ls -l /etc/ssl/certs/ca-certificates.crt || true
     - uses: shirok/setup-gauche@v6
       with:
         prebuilt-binary: false
@@ -26,14 +34,6 @@ jobs:
         whereis gosh
         gosh -V
         gauche-config --prefix
-    - name: Install tools
-      run: |
-        sudo apt-get install libgdbm-dev libmbedtls-dev
-    - name: Check openssl
-      run: |
-        whereis openssl
-        openssl version
-        ls -l /etc/ssl/certs/ca-certificates.crt || true
     - name: Download Gauche source
       run: |
         pwd
@@ -74,17 +74,6 @@ jobs:
       GAUCHE_VERSION_UNDERSCORE: 0_9_14
     steps:
     - uses: actions/checkout@v4
-    - uses: shirok/setup-gauche@v6
-      with:
-        prebuilt-binary: false
-        gauche-version: $GAUCHE_VERSION
-        test-gauche: false
-        configure-options: ''
-    - name: Run release version of Gauche once
-      run: |
-        whereis gosh
-        gosh -V
-        gauche-config --prefix
     - name: Install tools
       run: |
         brew install automake libtool
@@ -96,6 +85,17 @@ jobs:
         openssl version
         ls -l /etc/ssl/cert.pem || true
         ls -l /usr/local/etc/openssl/cert.pem || true
+    - uses: shirok/setup-gauche@v6
+      with:
+        prebuilt-binary: false
+        gauche-version: $GAUCHE_VERSION
+        test-gauche: false
+        configure-options: ''
+    - name: Run release version of Gauche once
+      run: |
+        whereis gosh
+        gosh -V
+        gauche-config --prefix
     - name: Download Gauche source
       run: |
         pwd
