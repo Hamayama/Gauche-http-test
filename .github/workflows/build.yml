@@ -52,7 +52,7 @@ jobs:
         cd Gauche-$GAUCHE_VERSION
         export GAUCHE_PREFIX=`gauche-config --prefix`
         ./configure -prefix=$GAUCHE_PREFIX --with-tls=mbedtls-internal
-        make -j
+        make
         make -s check
         sudo make install
     - name: Test
@@ -86,7 +86,7 @@ jobs:
         gauche-config --prefix
     - name: Install tools
       run: |
-        brew install automake libtool
+        brew install automake libtool openssl
     - name: Check openssl
       run: |
         whereis openssl
@@ -111,7 +111,7 @@ jobs:
         cd Gauche-$GAUCHE_VERSION
         export GAUCHE_PREFIX=`gauche-config --prefix`
         ./configure -prefix=$GAUCHE_PREFIX --with-tls=mbedtls-internal
-        make -j
+        make
         make -s check
         sudo make install
     - name: Test
