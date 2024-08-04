@@ -55,6 +55,7 @@ jobs:
         make -s check
         sudo make install
     - name: Test
+      if: always()
       run: |
         whereis gosh
         gosh -V
@@ -113,8 +114,9 @@ jobs:
         ./configure -prefix=$GAUCHE_PREFIX --with-tls=mbedtls-internal
         make
         make -s check
-        sudo make install
+        make install
     - name: Test
+      if: always()
       run: |
         whereis gosh
         gosh -V
