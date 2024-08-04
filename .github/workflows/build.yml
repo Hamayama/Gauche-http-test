@@ -34,8 +34,8 @@ jobs:
         pwd
         export GAUCHE_SOURCE_URL=https://github.com/shirok/Gauche/releases/download/release$GAUCHE_VERSION_UNDERSCORE/Gauche-$GAUCHE_VERSION.tgz
         echo $GAUCHE_SOURCE_URL
-        curl -f -o Gauche-$GAUCHE_VERSION.tgz $GAUCHE_SOURCE_URL
-        tar xzvf Gauche-$GAUCHE_VERSION.tgz
+        curl -f -L -o Gauche-$GAUCHE_VERSION.tgz $GAUCHE_SOURCE_URL
+        tar xvfz Gauche-$GAUCHE_VERSION.tgz
         ls
     - name: Patch to Gauche source
       run: |
@@ -84,8 +84,8 @@ jobs:
         pwd
         export GAUCHE_SOURCE_URL=https://github.com/shirok/Gauche/releases/download/release$GAUCHE_VERSION_UNDERSCORE/Gauche-$GAUCHE_VERSION.tgz
         echo $GAUCHE_SOURCE_URL
-        curl -f -o Gauche-$GAUCHE_VERSION.tgz $GAUCHE_SOURCE_URL
-        tar xzvf Gauche-$GAUCHE_VERSION.tgz
+        curl -f -L -o Gauche-$GAUCHE_VERSION.tgz $GAUCHE_SOURCE_URL
+        tar xvfz Gauche-$GAUCHE_VERSION.tgz
         ls
     - name: Patch to Gauche source
       run: |
