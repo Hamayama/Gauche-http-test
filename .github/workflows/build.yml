@@ -35,19 +35,20 @@ jobs:
         export GAUCHE_SOURCE_URL=https://github.com/shirok/Gauche/releases/download/release$GAUCHE_VERSION_UNDERSCORE/Gauche-$GAUCHE_VERSION.tgz
         echo $GAUCHE_SOURCE_URL
         curl -f -o Gauche-$GAUCHE_VERSION.tgz $GAUCHE_SOURCE_URL
-        tar xzvf ../$binary_tarball
+        tar xzvf Gauche-$GAUCHE_VERSION.tgz
         ls
     - name: Patch to Gauche source
       run: |
-        cp load_system_cert.c Gauche/ext/tls
+        cp load_system_cert.c Gauche-$GAUCHE_VERSION/ext/tls
     - name: Build
       run: |
         gcc -v
         cd Gauche-$GAUCHE_VERSION
-        #./configure
-        #make
-        #make -s check
-        #make install
+        export GAUCHE_PREFIX=`gauche-config --prefix`
+        ./configure -prefix=$GAUCHE_PREFIX
+        make
+        make -s check
+        make install
     - name: Test
       run: |
         gosh http_get_test.scm
@@ -84,19 +85,20 @@ jobs:
         export GAUCHE_SOURCE_URL=https://github.com/shirok/Gauche/releases/download/release$GAUCHE_VERSION_UNDERSCORE/Gauche-$GAUCHE_VERSION.tgz
         echo $GAUCHE_SOURCE_URL
         curl -f -o Gauche-$GAUCHE_VERSION.tgz $GAUCHE_SOURCE_URL
-        tar xzvf ../$binary_tarball
+        tar xzvf Gauche-$GAUCHE_VERSION.tgz
         ls
     - name: Patch to Gauche source
       run: |
-        cp load_system_cert.c Gauche/ext/tls
+        cp load_system_cert.c Gauche-$GAUCHE_VERSION/ext/tls
     - name: Build
       run: |
         gcc -v
         cd Gauche-$GAUCHE_VERSION
-        #./configure
-        #make
-        #make -s check
-        #make install
+        export GAUCHE_PREFIX=`gauche-config --prefix`
+        ./configure -prefix=$GAUCHE_PREFIX
+        make
+        make -s check
+        make install
     - name: Test
       run: |
         gosh http_get_test.scm
