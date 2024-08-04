@@ -21,7 +21,7 @@ jobs:
         gauche-version: $GAUCHE_VERSION
         test-gauche: false
         configure-options: ''
-    - name: Run release version of Gauche
+    - name: Run release version of Gauche once
       run: |
         whereis gosh
         gosh -V
@@ -29,6 +29,10 @@ jobs:
     - name: Install tools
       run: |
         sudo apt-get install libgdbm-dev libmbedtls-dev
+    - name: Check openssl
+      run: |
+        whereis openssl
+        openssl version
     - name: Download Gauche source
       run: |
         pwd
@@ -45,12 +49,14 @@ jobs:
         gcc -v
         cd Gauche-$GAUCHE_VERSION
         export GAUCHE_PREFIX=`gauche-config --prefix`
-        ./configure -prefix=$GAUCHE_PREFIX
-        make
+        ./configure -prefix=$GAUCHE_PREFIX --with-tls=mbedtls-internal
+        make -j
         make -s check
         sudo make install
     - name: Test
       run: |
+        whereis gosh
+        gosh -V
         gosh http_get_test.scm
 
   build-osx:
@@ -71,14 +77,18 @@ jobs:
         gauche-version: $GAUCHE_VERSION
         test-gauche: false
         configure-options: ''
-    - name: Run release version of Gauche
+    - name: Run release version of Gauche once
       run: |
         whereis gosh
         gosh -V
         gauche-config --prefix
     - name: Install tools
       run: |
-        brew install automake mbedtls libtool
+        brew install automake libtool
+    - name: Check openssl
+      run: |
+        whereis openssl
+        openssl version
     - name: Download Gauche source
       run: |
         pwd
@@ -95,10 +105,12 @@ jobs:
         gcc -v
         cd Gauche-$GAUCHE_VERSION
         export GAUCHE_PREFIX=`gauche-config --prefix`
-        ./configure -prefix=$GAUCHE_PREFIX
-        make
+        ./configure -prefix=$GAUCHE_PREFIX --with-tls=mbedtls-internal
+        make -j
         make -s check
         sudo make install
     - name: Test
       run: |
+        whereis gosh
+        gosh -V
         gosh http_get_test.scm
