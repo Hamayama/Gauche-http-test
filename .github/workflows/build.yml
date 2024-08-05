@@ -33,7 +33,8 @@ jobs:
     - name: Check openssl
       run: |
         whereis openssl
-        openssl version
+        openssl version -d
+        openssel
         ls -l /etc/ssl/certs/ca-certificates.crt || true
     - name: Download Gauche source
       run: |
@@ -93,6 +94,7 @@ jobs:
       run: |
         whereis openssl
         openssl version
+        openssl version -d
         ls -l /etc/ssl/cert.pem || true
         ls -l /usr/local/etc/openssl/cert.pem || true
         ls -l /usr/local/etc/openssl@1.1/cert.pem || true
