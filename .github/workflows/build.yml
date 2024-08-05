@@ -88,6 +88,7 @@ jobs:
     - name: Install tools
       run: |
         brew install automake libtool
+        brew install ca-certificates
         brew install openssl
         brew uninstall mbedtls
     - name: Check openssl
@@ -99,15 +100,18 @@ jobs:
         brew --prefix openssl@1.1
         brew --prefix openssl@3.0
         brew --prefix openssl@3
+        brew --prefix ca-certificates
         #
         ls -l /etc/ssl/cert.pem || true
         ls -l /usr/local/etc/openssl/cert.pem || true
         ls -l /usr/local/etc/openssl@1.1/cert.pem || true
         ls -l /usr/local/etc/openssl@3.0/cert.pem || true
         ls -l /usr/local/etc/openssl@3/cert.pem || true
+        ls -l /usr/local/etc/ca-certificates/cert.pem || true
         ls -l /opt/homebrew/etc/openssl@1.1/cert.pem || true
         ls -l /opt/homebrew/etc/openssl@3.0/cert.pem || true
         ls -l /opt/homebrew/etc/openssl@3/cert.pem || true
+        ls -l /opt/homebrew/etc/ca-certificates/cert.pem || true
     - name: Download Gauche source
       run: |
         pwd

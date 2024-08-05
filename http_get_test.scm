@@ -8,7 +8,7 @@
   (print "tls-ca-bundle-path=" (tls-ca-bundle-path))
   (guard (ex [else (print ex)])
     (receive (status header-list body)
-        (http-get "www.microsoft.com" "/" :secure #t)
+        (http-get "www.google.com/" "/" :secure #t)
       (print "http status=" status)))
   (print))
 
@@ -23,7 +23,9 @@
 (http-get-test "/usr/local/etc/openssl@1.1/cert.pem")
 (http-get-test "/usr/local/etc/openssl@3.0/cert.pem")
 (http-get-test "/usr/local/etc/openssl@3/cert.pem")
+(http-get-test "/usr/local/etc/ca-certificates/cert.pem")
 (http-get-test "/opt/homebrew/etc/openssl@1.1/cert.pem")
 (http-get-test "/opt/homebrew/etc/openssl@3.0/cert.pem")
 (http-get-test "/opt/homebrew/etc/openssl@3/cert.pem")
+(http-get-test "/opt/homebrew/etc/ca-certificates/cert.pem")
 
