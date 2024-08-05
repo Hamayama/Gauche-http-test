@@ -24,3 +24,7 @@
 (http-get-test)
 (print)
 
+(tls-ca-bundle-path "/usr/local/etc/openssl/cert.pem")
+(http-get-test)
+(print)
+
