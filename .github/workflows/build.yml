@@ -43,7 +43,6 @@ jobs:
         echo $GAUCHE_SOURCE_URL
         curl -f -L -o Gauche-$GAUCHE_VERSION.tgz $GAUCHE_SOURCE_URL
         tar xvfz Gauche-$GAUCHE_VERSION.tgz
-        ls
     - name: Patch to Gauche source
       run: |
         cp load_system_cert.c Gauche-$GAUCHE_VERSION/ext/tls
@@ -110,7 +109,6 @@ jobs:
         echo $GAUCHE_SOURCE_URL
         curl -f -L -o Gauche-$GAUCHE_VERSION.tgz $GAUCHE_SOURCE_URL
         tar xvfz Gauche-$GAUCHE_VERSION.tgz
-        ls
     - name: Patch to Gauche source
       run: |
         cp load_system_cert.c Gauche-$GAUCHE_VERSION/ext/tls
