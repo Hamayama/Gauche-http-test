@@ -35,6 +35,7 @@ jobs:
         whereis openssl
         openssl version
         openssl version -d
+        #
         ls -l /etc/ssl/certs/ca-certificates.crt || true
     - name: Download Gauche source
       run: |
@@ -51,7 +52,7 @@ jobs:
         gcc -v
         cd Gauche-$GAUCHE_VERSION
         ./configure --prefix=/usr --with-tls=mbedtls-internal
-        make
+        make -j
         make -s check
         sudo make install
     - name: Test
@@ -94,14 +95,19 @@ jobs:
         whereis openssl
         openssl version
         openssl version -d
+        #
         brew --prefix openssl@1.1
         brew --prefix openssl@3.0
         brew --prefix openssl@3
+        #
         ls -l /etc/ssl/cert.pem || true
         ls -l /usr/local/etc/openssl/cert.pem || true
         ls -l /usr/local/etc/openssl@1.1/cert.pem || true
         ls -l /usr/local/etc/openssl@3.0/cert.pem || true
         ls -l /usr/local/etc/openssl@3/cert.pem || true
+        ls -l /opt/homebrew/etc/openssl@1.1/cert.pem || true
+        ls -l /opt/homebrew/etc/openssl@3.0/cert.pem || true
+        ls -l /opt/homebrew/etc/openssl@3/cert.pem || true
     - name: Download Gauche source
       run: |
         pwd
@@ -117,7 +123,7 @@ jobs:
         gcc -v
         cd Gauche-$GAUCHE_VERSION
         ./configure --prefix=/usr/local --with-tls=mbedtls-internal
-        make
+        make -j
         make -s check
         sudo make install
     - name: Test
