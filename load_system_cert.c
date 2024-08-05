@@ -45,6 +45,7 @@ static ScmObj system_cert_loader(ScmTLS *t,
         Scm_Warn("No valid certificate found in the system's cert store");
     }
     CertCloseStore(h, 0);
+    // ***** print debug *****
     printf("cert load ok. (windows)\n");
     return SCM_TRUE;
 }
@@ -65,9 +66,11 @@ static ScmObj system_cert_loader(ScmTLS *t,
             NULL
         };
         for (const char **p = cacert_paths; *p != NULL; p++) {
+            // ***** print debug *****
             printf("cacert_path=%s\n", *p);
             int st = file_loader(t, *p);
             if (st == SSL_OK) {
+                // ***** print debug *****
                 printf("cert load ok.\n");
                 cert_path = *p;
                 return SCM_TRUE;
@@ -75,7 +78,11 @@ static ScmObj system_cert_loader(ScmTLS *t,
         }
     } else {
         int st = file_loader(t, cert_path);
-        if (st == SSL_OK) return SCM_TRUE;
+        if (st == SSL_OK) {
+            // ***** print debug *****
+            printf("cert load ok. (2nd)\n");
+            return SCM_TRUE;
+        }
     }
     return SCM_FALSE;
 }

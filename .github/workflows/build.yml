@@ -95,6 +95,9 @@ jobs:
         openssl version
         ls -l /etc/ssl/cert.pem || true
         ls -l /usr/local/etc/openssl/cert.pem || true
+        ls -l /usr/local/etc/openssl@1.1/cert.pem || true
+        ls -l /usr/local/etc/openssl@3.0/cert.pem || true
+        ls -l /usr/local/etc/openssl@3/cert.pem || true
     - name: Download Gauche source
       run: |
         pwd
