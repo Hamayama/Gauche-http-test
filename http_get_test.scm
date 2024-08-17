@@ -18,12 +18,16 @@
 
 (http-get-test 'not-change)
 (http-get-test 'system)
+;;
 (http-get-test "/etc/ssl/cert.pem")
+;;
 (http-get-test "/usr/local/etc/openssl/cert.pem")
 (http-get-test "/usr/local/etc/openssl@1.1/cert.pem")
 (http-get-test "/usr/local/etc/openssl@3.0/cert.pem")
 (http-get-test "/usr/local/etc/openssl@3/cert.pem")
 (http-get-test "/usr/local/etc/ca-certificates/cert.pem")
+;;
+(http-get-test "/opt/homebrew/etc/openssl/cert.pem")
 (http-get-test "/opt/homebrew/etc/openssl@1.1/cert.pem")
 (http-get-test "/opt/homebrew/etc/openssl@3.0/cert.pem")
 (http-get-test "/opt/homebrew/etc/openssl@3/cert.pem")
