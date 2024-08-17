@@ -104,8 +104,6 @@ jobs:
         brew --prefix openssl@3
         brew --prefix ca-certificates
         #
-        brew list --verbose ca-certificates
-        #
         ls -l /etc/ssl/cert.pem || true
         #
         ls -l /usr/local/etc/openssl/cert.pem || true
