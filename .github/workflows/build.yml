@@ -105,11 +105,14 @@ jobs:
         brew --prefix ca-certificates
         #
         ls -l /etc/ssl/cert.pem || true
+        #
         ls -l /usr/local/etc/openssl/cert.pem || true
         ls -l /usr/local/etc/openssl@1.1/cert.pem || true
         ls -l /usr/local/etc/openssl@3.0/cert.pem || true
         ls -l /usr/local/etc/openssl@3/cert.pem || true
         ls -l /usr/local/etc/ca-certificates/cert.pem || true
+        #
+        ls -l /opt/homebrew/etc/openssl/cert.pem || true
         ls -l /opt/homebrew/etc/openssl@1.1/cert.pem || true
         ls -l /opt/homebrew/etc/openssl@3.0/cert.pem || true
         ls -l /opt/homebrew/etc/openssl@3/cert.pem || true
