@@ -125,6 +125,7 @@ jobs:
         echo $GAUCHE_SOURCE_URL
         curl -f -L -o Gauche-$GAUCHE_VERSION.tgz $GAUCHE_SOURCE_URL
         tar xvfz Gauche-$GAUCHE_VERSION.tgz
+        mv Gauche-release$GAUCHE_VERSION_UNDERSCORE Gauche-$GAUCHE_VERSION
     - name: Patch to Gauche source
       run: |
         cp tls.ac             Gauche-$GAUCHE_VERSION/ext/tls
