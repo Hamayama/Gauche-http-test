@@ -49,7 +49,7 @@ jobs:
         mv Gauche-release$GAUCHE_VERSION_UNDERSCORE Gauche-$GAUCHE_VERSION
     - name: Patch to Gauche source
       run: |
-        #cp tls.ac             Gauche-$GAUCHE_VERSION/ext/tls
+        cp tls.ac             Gauche-$GAUCHE_VERSION/ext/tls
         cp load_system_cert.c Gauche-$GAUCHE_VERSION/ext/tls
     - name: Build and install
       run: |
