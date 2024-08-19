@@ -120,17 +120,20 @@ jobs:
     - name: Download Gauche source
       run: |
         pwd
-        GAUCHE_SOURCE_URL=https://github.com/shirok/Gauche/releases/download/release$GAUCHE_VERSION_UNDERSCORE/Gauche-$GAUCHE_VERSION.tgz
+        #GAUCHE_SOURCE_URL=https://github.com/shirok/Gauche/releases/download/release$GAUCHE_VERSION_UNDERSCORE/Gauche-$GAUCHE_VERSION.tgz
+        GAUCHE_SOURCE_URL=https://github.com/shirok/Gauche/archive/refs/tags/release0_9_14.tar.gz
         echo $GAUCHE_SOURCE_URL
         curl -f -L -o Gauche-$GAUCHE_VERSION.tgz $GAUCHE_SOURCE_URL
         tar xvfz Gauche-$GAUCHE_VERSION.tgz
     - name: Patch to Gauche source
       run: |
+        cp tls.ac             Gauche-$GAUCHE_VERSION/ext/tls
         cp load_system_cert.c Gauche-$GAUCHE_VERSION/ext/tls
     - name: Build and install
       run: |
         gcc -v
         cd Gauche-$GAUCHE_VERSION
+        ./DIST gen
         ./configure --prefix=/usr/local --with-tls=mbedtls-internal
         make -j
         make -s check

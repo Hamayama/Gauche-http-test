@@ -1,0 +1,195 @@
+dnl
+dnl Configure ext/tls
+dnl This file is included by the toplevel configure.ac
+dnl
+
+dnl with-tls option
+dnl
+dnl   --with-tls=TYPE,TYPE,...    # include TLS library TYPE, ...
+dnl   --with-tls=no               # do not include any TLS library support
+dnl
+
+TLSLIBS=mbedtls
+tls_explicitly_disabled=no
+AC_ARG_WITH(tls,
+  AS_HELP_STRING([--with-tls=TLSLIB,...],
+  [Select which TLS libraries to be compiled.  Currently we support 'mbedtls'
+   (to use MbedLS in the system library), or 'mbedtls-internal' (to use mbed TLS
+   compiled with Gauche).
+   By default, we use the system's mbedtls library if it's avaialble.  If not,
+   no TLS support is compiled.  You can specify --with-tls=no to exclude
+   TLS support explicitly.]),
+  [
+    AS_CASE([$with_tls],
+      [no|none], [TLSLIBS=""
+                  tls_explicitly_disabled=yes],
+      [yes],     [],            dnl Use the default
+                 [TLSLIBS="$with_tls"])
+  ])
+
+dnl Scan TLSLIB
+
+use_mbed=no
+use_mbed_internal=no
+
+GAUCHE_TLS_SWITCH_MBEDTLS_INTERNAL_yes="@%:@"
+GAUCHE_TLS_SWITCH_MBEDTLS_INTERNAL_no=
+
+AC_CHECK_LIB(mbedtls, mbedtls_ssl_init)
+
+for tls in `echo $TLSLIBS | tr ',' ' '`
+do
+AS_CASE([$tls],
+  [mbedtls],
+           [AS_IF([test $use_mbed_internal = yes], [
+              AC_MSG_ERROR([You can only specify either one of 'mbedtls' or
+                           'mbedtls-internal' in --with-tls option])
+            ], [
+              use_mbed=yes
+            ])],
+  [mbedtls-internal],
+           [AS_IF([test $use_mbed = yes], [
+              AC_MSG_ERROR([You can only specify either one of 'mbedtls' or
+                            'mbedtls-internal' in --with-tls option])
+            ], [
+              use_mbed=yes
+              use_mbed_internal=yes
+              MBEDTLS_CFLAGS="-I ../../tools/tls/include"
+              MBEDTLS_LDFLAGS="-L ../../tools/tls"
+              GAUCHE_TLS_SWITCH_MBEDTLS_INTERNAL_yes=
+              GAUCHE_TLS_SWITCH_MBEDTLS_INTERNAL_no="@%:@"
+              AS_CASE([$host],
+                [*mingw*], [
+                  AS_IF([cmake -G 2>&1 | grep -q 'MSYS Makefiles'], [
+                    MBEDTLS_CMAKE_OPTIONS="-G'MSYS Makefiles'"
+                  ])
+                ])
+            ])],
+   dnl otherwise:
+           [
+            AC_MSG_ERROR([Invalid ---with-tls choice; it must be either
+                          mbedtls or mbedtls-internal.])
+           ])
+done
+
+AC_SUBST(GAUCHE_TLS_SWITCH_MBEDTLS_INTERNAL_yes)
+AC_SUBST(GAUCHE_TLS_SWITCH_MBEDTLS_INTERNAL_no)
+
+dnl For the backward compatibility
+AC_ARG_ENABLE(tls,
+  AS_HELP_STRING([--enable-tls=TLSLIB,...],
+  [Obsoleted.  Same as --with-tls=TLSLIB,... for the compatibility.]),
+  [
+    AC_MSG_WARN([--enable-tls is obsoleted.  Use --with-tls.])
+    AS_CASE([$enableval],
+      [no|none], [TLSLIBS=""],
+      [yes],     [],            dnl Use the default
+                 [TLSLIBS="$enableval"])
+  ])
+
+dnl Check for tls library availability.
+
+GAUCHE_TLS_SWITCH_MBEDTLS="@%:@"
+GAUCHE_TLS_SWITCH_NONE=
+
+dnl mbedtls
+AS_IF([test $use_mbed = yes], [
+  AS_IF([test $use_mbed_internal = yes], [
+    dnl We'll extract MbedTLS source tree under tools/tls by 'make'.
+    dnl We don't have the source tree during ./configure, so we can't
+    dnl run tests for it.   Since we know the version of MbedTLS we use
+    dnl (see MBEDTLS_VERSION in tools/tls/Makefile.in), we assume
+    dnl those libraries are available.
+    MBEDTLS_LIBS="${MBEDTLS_LDFLAGS} -lmbedtls -lmbedx509 -lmbedcrypto"
+  ], [
+    CFLAGS_SAVE=$CFLAGS
+    CFLAGS="$MBEDTLS_CFLAGS $CFLAGS"
+    AC_CHECK_HEADER([mbedtls/version.h], [], [mbedtls_unavailable=yes])
+    CFLAGS=${CFLAGS_SAVE}
+
+    dnl We don't want to include mbedtls libraries in generic LIBS
+    LDFLAGS_SAVE=${LDFLAGS}
+    LIBS_SAVE=${LIBS}
+    LDFLAGS="${LDFLAGS} ${MBEDTLS_LDFLAGS}"
+    MBEDTLS_LIBS=""
+    AC_SEARCH_LIBS([mbedtls_ctr_drbg_init], [mbedcrypto],
+     [MBEDTLS_LIBS="-lmbedcrypto ${MBEDTLS_LIBS}"],
+     [mbedtls_unavailable=yes])
+    AC_SEARCH_LIBS([mbedtls_x509_crt_init], [mbedx509],
+     [MBEDTLS_LIBS="-lmbedx509 ${MBEDTLS_LIBS}"],
+     [mbedtls_unavailable=yes])
+    AC_SEARCH_LIBS([mbedtls_ssl_init], [mbedtls],
+     [MBEDTLS_LIBS="-lmbedtls ${MBEDTLS_LIBS}"],
+     [mbedtls_unavailable=yes])
+    LDFLAGS=${LDFLAGS_SAVE}
+    LIBS=${LIBS_SAVE}
+    MBEDTLS_LIBS="${MBEDTLS_LDFLAGS} ${MBEDTLS_LIBS}"
+    EXT_LIBS="$EXT_LIBS $MBEDTLS_LIBS"
+  ])
+
+  AS_IF([test "$mbedtls_unavailable" = yes], [
+    AC_MSG_NOTICE([Can't find mbedtls headers and/or libraries.])
+    ],[
+      AC_DEFINE(GAUCHE_USE_MBEDTLS, 1, [Define if you use mbed TLS])
+      AC_SUBST(MBEDTLS_CFLAGS)
+      AC_SUBST(MBEDTLS_LIBS)
+      AC_SUBST(MBEDTLS_CMAKE_OPTIONS)
+      GAUCHE_TLS_TYPES="mbedtls $GAUCHE_TLS_TYPES"
+      GAUCHE_TLS_SWITCH_MBEDTLS=
+      GAUCHE_TLS_SWITCH_NONE="@%:@"
+   ])
+  ])
+
+AC_SUBST(GAUCHE_TLS_SWITCH_MBEDTLS)
+AC_SUBST(GAUCHE_TLS_SWITCH_NONE)
+
+dnl Check system CA store support
+dnl AC_SEARCH_LIBS doesn't seem to work well in cross-compiling mingw-w64
+dnl binary on Linux, so we just treat mingw build specially.
+AS_IF([test -n "$TLSLIBS"], [
+  SYSTEM_CERT_LIBS=""
+  AS_CASE([$host],
+     [*mingw*], [
+       AC_DEFINE(HAVE_WINCRYPT_H, 1, [Define if you have wincrypt.h])
+       SYSTEM_CERT_LIBS="-lcrypt32"
+       ])
+  EXT_LIBS="$EXT_LIBS $SYSTEM_CERT_LIBS"
+  AC_SUBST(SYSTEM_CERT_LIBS)
+])
+
+AC_ARG_WITH([ca-bundle],
+  AS_HELP_STRING([--with-ca-bundle=/path/to/ca-bundle.crt],
+                 [Specify the default CA certificate bundle file path for
+                  TLS certificate validation. This file is required to use
+                  mbed TLS. If set "check", check the availability at runtime.
+                  If set "system", use system certificate store.
+                  Default is "check".]),
+  [
+    AS_CASE([$with_ca_bundle],
+        [check],  [AC_DEFINE([GAUCHE_CA_BUNDLE_CHECK],  1, [Define to check system CA availability at runtime])
+                   TLS_CA_TYPE=check
+                   TLS_CA_PATH=
+                  ],
+        [no],     [AC_DEFINE([GAUCHE_CA_BUNDLE_NONE],   1, [Define not to use CA])
+                   TLS_CA_TYPE=none
+                   TLS_CA_PATH=
+                  ],
+        [system], [AC_DEFINE([GAUCHE_CA_BUNDLE_SYSTEM], 1, [Define to use system CA])
+                   TLS_CA_TYPE=system
+                   TLS_CA_PATH=
+                  ],
+                  [AC_DEFINE([GAUCHE_CA_BUNDLE_FILE],   1, [Define to use file CA])
+                   AC_DEFINE_UNQUOTED([GAUCHE_CA_BUNDLE], ["$with_ca_bundle"], [CA file path])
+                   TLS_CA_TYPE=file
+                   TLS_CA_PATH=$with_ca_bundle
+                  ]
+     )
+  ], [
+    AC_DEFINE([GAUCHE_CA_BUNDLE_CHECK], 1)
+    TLS_CA_TYPE=check
+    TLS_CA_PATH=
+  ])
+
+dnl Local variables:
+dnl mode: autoconf
+dnl end:
