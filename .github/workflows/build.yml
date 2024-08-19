@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     env:
+      GAUCHE_PREVIOS_VERSION: 0.9.13
       GAUCHE_VERSION: 0.9.14
       GAUCHE_VERSION_UNDERSCORE: 0_9_14
     steps:
@@ -18,7 +19,7 @@ jobs:
     - uses: shirok/setup-gauche@v6
       with:
         prebuilt-binary: false
-        gauche-version: $GAUCHE_VERSION
+        gauche-version: $GAUCHE_PREVIOS_VERSION
         test-gauche: false
         configure-options: '--with-tls=none'
     - name: Run release version of Gauche once
@@ -29,7 +30,7 @@ jobs:
     - name: Install tools
       run: |
         sudo apt-get install libgdbm-dev
-        #sudo apt-get install libmbedtls-dev
+        sudo apt-get install libmbedtls-dev
     - name: Check openssl
       run: |
         whereis openssl
@@ -40,17 +41,21 @@ jobs:
     - name: Download Gauche source
       run: |
         pwd
-        GAUCHE_SOURCE_URL=https://github.com/shirok/Gauche/releases/download/release$GAUCHE_VERSION_UNDERSCORE/Gauche-$GAUCHE_VERSION.tgz
+        #GAUCHE_SOURCE_URL=https://github.com/shirok/Gauche/releases/download/release$GAUCHE_VERSION_UNDERSCORE/Gauche-$GAUCHE_VERSION.tgz
+        GAUCHE_SOURCE_URL=https://github.com/shirok/Gauche/archive/refs/tags/release0_9_14.tar.gz
         echo $GAUCHE_SOURCE_URL
         curl -f -L -o Gauche-$GAUCHE_VERSION.tgz $GAUCHE_SOURCE_URL
         tar xvfz Gauche-$GAUCHE_VERSION.tgz
+        mv Gauche-release$GAUCHE_VERSION_UNDERSCORE Gauche-$GAUCHE_VERSION
     - name: Patch to Gauche source
       run: |
+        #cp tls.ac             Gauche-$GAUCHE_VERSION/ext/tls
         cp load_system_cert.c Gauche-$GAUCHE_VERSION/ext/tls
     - name: Build and install
       run: |
         gcc -v
         cd Gauche-$GAUCHE_VERSION
+        ./DIST gen
         ./configure --prefix=/usr --with-tls=mbedtls-internal
         make -j
         make -s check
@@ -70,6 +75,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 90
     env:
+      GAUCHE_PREVIOS_VERSION: 0.9.13
       GAUCHE_VERSION: 0.9.14
       GAUCHE_VERSION_UNDERSCORE: 0_9_14
     steps:
@@ -77,7 +83,7 @@ jobs:
     - uses: shirok/setup-gauche@v6
       with:
         prebuilt-binary: false
-        gauche-version: $GAUCHE_VERSION
+        gauche-version: $GAUCHE_PREVIOS_VERSION
         test-gauche: false
         configure-options: '--with-tls=none'
     - name: Run release version of Gauche once
